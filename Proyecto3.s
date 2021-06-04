@@ -1,24 +1,19 @@
-@
-@ GPIO demonstration code NJM
-@ Just calls phys_to_virt (a C program that calls mmap())
-@ to map a given physical page to virtual memory
-@ Must be run as root of course :) Use at your own risk!
-@
+
 /*---------------------------------------------
 * PARA EJECUTAR:
 * gcc -c phys_to_virt.c
-* as -o Lab10.o Lab10.s
-* gcc -o Lab10 Lab10.o phys_to_virt.o
-* sudo ./Lab10
+* as -o Proyecto3.o Proyecto3.s
+* gcc -o Proyecto3 Proyecto3.o phys_to_virt.o
+* sudo ./Proyecto3
 *---------------------------------------------*/
 
 /* --------------------------------------------
-* Lab10
-* Fecha: 24/05/21
+* Proyecto 3
+* Fecha: 03/06/21
 * Creado por:
 * Alejandro Gómez 20347
 * Marco Jurado 20308
-* Adaptado de archivo pruebaa subido a canvas
+* Adaptado de Lab 10
  -------------------------------------------*/ 
 
 
