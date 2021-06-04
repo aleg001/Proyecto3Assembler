@@ -45,7 +45,7 @@ Puertos GPIO a utilizar:
 	GPIO 3 = Segmento G
 	GPIO 2 = Segmento C
 	GPIO 1 = Segmento E
-	GPIO 0 = Segmento D
+	GPIO 7 = Segmento D
 	GPIO 6 = Segmento DP
 	Ground = Ground
 	GPIO 25 = PIN 37 = DipSwitch
@@ -55,7 +55,7 @@ Puertos GPIO a utilizar:
 .balign 4	
 Intro: 	 .asciz  "  >>Raspberry Pi wiringPi blink test\n"
 ErrMsg:	 .asciz	"  >>Setup didn't work... Aborting...\n"
-pin1:	.int	0 //segmento D
+pin1:	.int	7 //segmento D
 pin2:	.int	1 //segmento E
 pin3:	.int 	22 //segmento C
 pin4:	.int 	3 //segmento G
@@ -73,10 +73,10 @@ OUTPUT	 =	1
 INPUT    =  0
 ingresoNum: .byte 0
 
-mensajeDespedida: .asciz "  >> Vuelve pronto!"
+mensajeDespedida: .asciz "\n  >> Vuelve pronto!\n"
 formatoIngreso: .asciz "%c" //Se usa char pues es solo una letra
-mensajeIngreso: .asciz "  >> Bienvenido! \n  1. ingresa Y para ejecutar\n  2. ingresa Q para detener y cerrar\n"
-mensajeDIPApagado: .asciz "  >> Se ha detectado que el Dip Switch está apagado"
+mensajeIngreso: .asciz "\n  >> Bienvenido! \n  1. ingresa Y para ejecutar\n  2. ingresa Q para detener y cerrar\n\n"
+mensajeDIPApagado: .asciz " \n >> El Dip Switch está apagado... Enciendelo para usar el programa!\n"
 	
 @ ---------------------------------------
 @	codigo
@@ -173,14 +173,14 @@ init:
 VerificacionDeSwitch:
 	
 	@delay(250)		 ;
-	ldr	r0, =delayMsPruebas
+	ldr	r0, =delayMs
 	ldr	r0, [r0]
 	bl	delay
 
 	ldr r0,=pin9                //Carga el pin de entrada
 	ldr r0,[r0]
 	bl digitalRead              //Escritura y no lectura
-	cmp r0,#0                   // Si está en 1 esta encendido
+	cmp r0,#1                   // Si está en 1 esta encendido
 
 	beq menu 	         //Pide ingreso solo si el switch esta activo.
 	ldr r0,=mensajeDIPApagado
@@ -191,6 +191,7 @@ VerificacionDeSwitch:
 /*************************************************************MENU Q y Y*******************************************************************/
 
 menu:
+
 	mov r1,#0
 	ldr r11,=ingresoNum 
 	str r1,[r11]
@@ -198,26 +199,24 @@ menu:
 
 	ldr r0,=mensajeIngreso
 	bl printf
-	
+
 	ldr r0,=formatoIngreso
 	ldr r1,=ingresoNum
 	bl scanf
 
+	
+
 	ldr r11,= formatoIngreso
 	ldrb r11,[r11]
-	
-	ldr r0,=ingresoNum
-	ldrb r12,[r0]
-	
 
-	cmp r12,#'y'
+
+	cmp r11,#'y'
 	beq forLoop
+	b IngresoChar
 
 
-	cmp r12,#'q'
+	cmp r11,#'q'
 	beq done
-	
-	b menu
 
 forLoop:						// inicio de ciclo 
 	cmp	r4, r5
